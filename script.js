@@ -144,3 +144,114 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 });
+
+document.getElementById("calculateArea").addEventListener("click", () => {
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
+
+  canvas.getObjects().forEach((obj) => {
+    if (obj.fill === "gray") {
+      // Проверяем только стены
+      const { left, top, width, height } = obj;
+      minX = Math.min(minX, left);
+      minY = Math.min(minY, top);
+      maxX = Math.max(maxX, left + width);
+      maxY = Math.max(maxY, top + height);
+    }
+  });
+
+  if (minX === Infinity || minY === Infinity) {
+    document.getElementById("roomArea").innerText = "Комната не найдена!";
+    return;
+  }
+
+  const roomWidth = maxX - minX;
+  const roomHeight = maxY - minY;
+  const area = (roomWidth * roomHeight) / (100 * 100); // Конвертируем в м² (если 1px = 1см)
+
+  document.getElementById(
+    "roomArea"
+  ).innerText = `Площадь комнаты: ${area.toFixed(2)} м²`;
+});
+
+let isDrawing = false;
+let points = [];
+let tempLine = null;
+let roomPolygon = null;
+
+document.getElementById("drawRoom").addEventListener("click", () => {
+  if (roomPolygon) {
+    canvas.remove(roomPolygon);
+    roomPolygon = null;
+  }
+
+  isDrawing = true;
+  points = [];
+
+  // Начинаем рисование
+  canvas.on("mouse:down", (event) => {
+    if (!isDrawing) return;
+
+    const { x, y } = event.pointer;
+    points.push({ x, y });
+
+    if (points.length > 1) {
+      if (tempLine) canvas.remove(tempLine);
+
+      tempLine = new fabric.Line(
+        [points[points.length - 2].x, points[points.length - 2].y, x, y],
+        {
+          stroke: "blue",
+          strokeWidth: 2,
+          selectable: false,
+          evented: false,
+        }
+      );
+      canvas.add(tempLine);
+    }
+
+    // Замыкаем контур
+    if (
+      points.length > 2 &&
+      Math.abs(points[0].x - x) < 10 &&
+      Math.abs(points[0].y - y) < 10
+    ) {
+      isDrawing = false;
+      canvas.off("mouse:down");
+
+      roomPolygon = new fabric.Polygon(points, {
+        fill: "rgba(0, 0, 255, 0.1)", // Прозрачный фон, чтобы сетка была видна
+        stroke: "blue",
+        strokeWidth: 2,
+        selectable: true,
+      });
+
+      canvas.add(roomPolygon);
+      canvas.renderAll(); // Принудительный ререндер
+    }
+  });
+});
+
+document
+  .getElementById("calculatePolygonArea")
+  .addEventListener("click", () => {
+    if (!roomPolygon) {
+      document.getElementById("polygonArea").innerText = "Контур не нарисован!";
+      return;
+    }
+
+    const points = roomPolygon.points;
+    let area = 0;
+
+    for (let i = 0; i < points.length; i++) {
+      let j = (i + 1) % points.length;
+      area += points[i].x * points[j].y - points[j].x * points[i].y;
+    }
+    area = Math.abs(area) / 2 / (100 * 100); // Конвертация в м² (если 1px = 1см)
+
+    document.getElementById(
+      "polygonArea"
+    ).innerText = `Площадь по контуру: ${area.toFixed(2)} м²`;
+  });

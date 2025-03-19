@@ -10,13 +10,26 @@
   <body>
     <h2>Конструктор дома</h2>
     <div class="container">
-      <canvas id="canvas"></canvas>
       <div class="toolbar">
         <button id="addWall">Добавить стену</button>
         <button id="addWindow">Добавить окно</button>
         <button id="addDoor">Добавить дверь</button>
         <button id="addHeater">Добавить обогреватель</button>
+        <button id="deleteObject">Удалить выбранный</button>
         <button id="saveHouse">Сохранить</button>
+        <button id="loadHouse">Загрузить</button>
+      </div>
+      <div class="editor">
+        <canvas id="canvas"></canvas>
+        <div class="property-panel">
+          <h3>Свойства</h3>
+          <label>Ширина: <input type="number" id="widthInput" /></label>
+          <label>Высота: <input type="number" id="heightInput" /></label>
+          <label>Цвет: <input type="color" id="colorInput" /></label>
+          <label
+            >Толщина стены: <input type="number" id="thicknessInput"
+          /></label>
+        </div>
       </div>
     </div>
     <script src="script.js"></script>

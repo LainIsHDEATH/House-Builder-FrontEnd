@@ -1,7 +1,7 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  background-color: black;
+  background-color: #f3f3f3;
 }
 
 h2 {
@@ -14,13 +14,8 @@ h2 {
   align-items: center;
 }
 
-canvas {
-  border: 2px solid #000;
-  /* background-color: white; */
-}
-
 .toolbar {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 button {
@@ -37,4 +32,35 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+.editor {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+}
+
+canvas {
+  border: 2px solid #000;
+  /* background-color: white; */
+}
+
+.property-panel {
+  width: 200px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.property-panel label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.property-panel input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
 }
